@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThumbPulse — YouTube Thumbnail Previewer</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <header class="nav">
+    <a class="brand" href="/">
+      <span class="brand-mark">TP</span>
+      <span>ThumbPulse</span>
+    </a>
+  </header>
+
+  <main class="container">
+    <section class="editor-panel">
+      <h2>Thumbnail Studio</h2>
+      <p class="subtitle">Test your artwork against real YouTube desktop and mobile layouts instantly.</p>
+
+      <div class="form-group">
+        <label for="imageUpload">Upload Thumbnail Image</label>
+        <input type="file" id="imageUpload" accept="image/*" />
+      </div>
+
+      <div class="form-group">
+        <label for="videoTitle">Video Title</label>
+        <input type="text" id="videoTitle" value="I Built a Complete App in 24 Hours (Full Guide)" autocomplete="off" />
+      </div>
+
+      <div class="form-group">
+        <label for="channelName">Channel Name</label>
+        <input type="text" id="channelName" value="Creator Studio" autocomplete="off" />
+      </div>
+
+      <div class="form-group">
+        <label for="videoViews">Views & Timestamp</label>
+        <input type="text" id="videoViews" value="142K views • 1 day ago" autocomplete="off" />
+      </div>
+    </section>
+
+    <section class="preview-panel">
+      <h3>Live Previews</h3>
+
+      <div class="preview-card">
+        <div class="mockup-thumb-wrap">
+          <img id="previewImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='180' style='background:#111827;fill:#64748b'><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13'>Upload Image to Preview</text></svg>" alt="Thumbnail Preview" />
+          <span class="duration-badge">14:20</span>
+        </div>
+        <div class="mockup-details">
+          <div class="mockup-avatar"></div>
+          <div class="mockup-text">
+            <h4 id="displayTitle">I Built a Complete App in 24 Hours (Full Guide)</h4>
+            <p id="displayChannel">Creator Studio</p>
+            <p id="displayMeta">142K views • 1 day ago</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
