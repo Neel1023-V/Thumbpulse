@@ -5,7 +5,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Single-file self-contained frontend response
 app.get("/", (req, res) => {
     res.send(`
 <!doctype html>
@@ -57,10 +56,31 @@ app.get("/", (req, res) => {
       padding: 12px; color: #fff; font-size: 14px; outline: none;
     }
     .form-group input[type="file"] { cursor: pointer; color: var(--muted); }
-    .preview-panel h3 { margin-top: 0; font-size: 18px; border-bottom: 1px solid var(--line); padding-bottom: 14px; }
-    .preview-card {
-      background: #000; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); max-width: 380px; margin-top: 24px;
+    
+    .stats-box {
+      background: #040609; border: 1px solid var(--line); border-radius: 10px;
+      padding: 12px; font-size: 13px; color: var(--muted); display: flex; justify-content: space-between;
     }
+    .stats-box span { color: var(--text); font-weight: 600; }
+
+    .preview-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 20px; }
+    .preview-panel h3 { margin: 0; font-size: 18px; }
+    
+    .view-toggles { display: flex; gap: 8px; }
+    .view-btn {
+      background: #040609; border: 1px solid var(--line); color: var(--muted);
+      padding: 6px 12px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+    }
+    .view-btn.active { background: var(--accent); color: #022c22; border-color: var(--accent); }
+
+    .preview-card {
+      background: #000; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); max-width: 380px; margin: auto;
+    }
+    .preview-card.mobile-view { max-width: 240px; }
+    .preview-card.mobile-view .mockup-details { gap: 8px; padding: 10px; }
+    .preview-card.mobile-view .mockup-text h4 { font-size: 12px; }
+    .preview-card.mobile-view .mockup-avatar { width: 28px; height: 28px; }
+
     .mockup-thumb-wrap { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #111827; }
     .mockup-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
     .duration-badge {
@@ -86,11 +106,19 @@ app.get("/", (req, res) => {
   <main class="container">
     <section class="editor-panel">
       <h2>Thumbnail Studio</h2>
-      <p class="subtitle">Test your artwork against real YouTube desktop and mobile layouts instantly.</p>
+      <p class="subtitle">Test your artwork against real YouTube layouts with real-time specs.</p>
 
       <div class="form-group">
         <label for="imageUpload">Upload Thumbnail Image</label>
         <input type="file" id="imageUpload" accept="image/*" />
+      </div>
+
+      <div class="form-group">
+        <label>Image Specs & Quality</label>
+        <div class="stats-box">
+          <div>Resolution: <span id="imgRes">--</span></div>
+          <div>Size: <span id="imgSize">--</span></div>
+        </div>
       </div>
 
       <div class="form-group">
@@ -110,9 +138,15 @@ app.get("/", (req, res) => {
     </section>
 
     <section class="preview-panel">
-      <h3>Live Previews</h3>
+      <div class="preview-header">
+        <h3>Live Preview</h3>
+        <div class="view-toggles">
+          <button id="desktopBtn" class="view-btn active">Desktop</button>
+          <button id="mobileBtn" class="view-btn">Mobile Feed</button>
+        </div>
+      </div>
 
-      <div class="preview-card">
+      <div id="previewCard" class="preview-card">
         <div class="mockup-thumb-wrap">
           <img id="previewImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='180' style='background:#111827;fill:#64748b'><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='13'>Upload Image to Preview</text></svg>" alt="Thumbnail Preview" />
           <span class="duration-badge">14:20</span>
@@ -132,6 +166,12 @@ app.get("/", (req, res) => {
   <script>
     const imageUpload = document.getElementById("imageUpload");
     const previewImg = document.getElementById("previewImg");
+    const previewCard = document.getElementById("previewCard");
+    const desktopBtn = document.getElementById("desktopBtn");
+    const mobileBtn = document.getElementById("mobileBtn");
+    const imgRes = document.getElementById("imgRes");
+    const imgSize = document.getElementById("imgSize");
+
     const videoTitleInput = document.getElementById("videoTitle");
     const channelNameInput = document.getElementById("channelName");
     const videoViewsInput = document.getElementById("videoViews");
@@ -143,12 +183,34 @@ app.get("/", (req, res) => {
     imageUpload.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (file) {
+        // Calculate file size in KB or MB
+        const sizeKB = file.size / 1024;
+        const sizeText = sizeKB > 1024 ? (sizeKB / 1024).toFixed(2) + " MB" : sizeKB.toFixed(0) + " KB";
+        imgSize.textContent = sizeText;
+
         const reader = new FileReader();
         reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            imgRes.textContent = \`\${img.width} × \${img.height}px\`;
+          };
+          img.src = event.target.result;
           previewImg.src = event.target.result;
         };
         reader.readAsDataURL(file);
       }
+    });
+
+    desktopBtn.addEventListener("click", () => {
+      desktopBtn.classList.add("active");
+      mobileBtn.classList.remove("active");
+      previewCard.classList.remove("mobile-view");
+    });
+
+    mobileBtn.addEventListener("click", () => {
+      mobileBtn.classList.add("active");
+      desktopBtn.classList.remove("active");
+      previewCard.classList.add("mobile-view");
     });
 
     videoTitleInput.addEventListener("input", (e) => {
