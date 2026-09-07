@@ -13,6 +13,11 @@ app.get("/", (req, res) => {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ThumbPulse — YouTube Thumbnail Previewer</title>
+  
+  <!-- Google AdSense Script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8942621552509637"
+       crossorigin="anonymous"></script>
+
   <style>
     :root {
       --bg: #07090e;
@@ -183,7 +188,6 @@ app.get("/", (req, res) => {
     imageUpload.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (file) {
-        // Calculate file size in KB or MB
         const sizeKB = file.size / 1024;
         const sizeText = sizeKB > 1024 ? (sizeKB / 1024).toFixed(2) + " MB" : sizeKB.toFixed(0) + " KB";
         imgSize.textContent = sizeText;
@@ -231,5 +235,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`ThumbPulse server running on port ${PORT}`);
+    console.log(\`ThumbPulse server running on port \${PORT}\`);
 });
