@@ -6,8 +6,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.get("/", (req, res) => {
-    res.send(`
-<!doctype html>
+    res.send(`<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -196,7 +195,7 @@ app.get("/", (req, res) => {
         reader.onload = function(event) {
           const img = new Image();
           img.onload = function() {
-            imgRes.textContent = \`\${img.width} × \${img.height}px\`;
+            imgRes.textContent = img.width + " × " + img.height + "px";
           };
           img.src = event.target.result;
           previewImg.src = event.target.result;
@@ -230,10 +229,9 @@ app.get("/", (req, res) => {
     });
   </script>
 </body>
-</html>
-    `);
+</html>`);
 });
 
 app.listen(PORT, () => {
-    console.log(\`ThumbPulse server running on port \${PORT}\`);
+    console.log(`ThumbPulse server running on port ${PORT}`);
 });
